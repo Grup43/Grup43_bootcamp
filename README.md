@@ -161,7 +161,7 @@ https://sharing.clickup.com/90181413739/b/h/6-901809294193-2/89459ce95e30949
 ## Profil Sayfası
 <img src="https://github.com/user-attachments/assets/53926995-ec25-47cc-a67f-6cdef1998b16" width="400"/>
 
-## 🗓️ Planlayıcı Sayfası
+## Planlayıcı Sayfası
 
 Planlayıcı ekranının temel iskeleti aşağıdaki gibidir:
 

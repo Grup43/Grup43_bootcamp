@@ -1,11 +1,23 @@
-import 'package:educoach_flutter/pages/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:educoach_flutter/pages/planner_page.dart';
+import 'package:educoach_flutter/services/task_service.dart';
+import 'profile_page.dart';
+import 'shop_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
   Widget build(BuildContext context) {
+    // Dinamik ilerleme yüzdesi elde ediliyor
+    final double progress = TaskService.progressToday();
+    final int percent = (progress * 100).round();
+
     return Scaffold(
       backgroundColor: Colors.blue[200],
       appBar: AppBar(
@@ -19,7 +31,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
                 );
               },
             ),
@@ -42,21 +54,15 @@ class HomePage extends StatelessWidget {
           Positioned(
             bottom: 300,
             left: MediaQuery.of(context).size.width * 0.15,
-            child: Image.asset(
-              'assets/tree_1.png',
-              width: 60,
-            ),
+            child: Image.asset('assets/tree_1.png', width: 60),
           ),
           Positioned(
             bottom: 300,
             left: MediaQuery.of(context).size.width * 0.30,
-            child: Image.asset(
-              'assets/tree_2.png',
-              width: 60,
-            ),
+            child: Image.asset('assets/tree_2.png', width: 60),
           ),
 
-          // Günlük Hedef Yazısı
+          // Günlük Hedef ve İlerleme
           Positioned(
             top: 80,
             child: Column(
@@ -70,7 +76,6 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                // İlerleme göstergesi
                 Stack(
                   alignment: Alignment.center,
                   children: [
@@ -78,22 +83,56 @@ class HomePage extends StatelessWidget {
                       height: 70,
                       width: 70,
                       child: CircularProgressIndicator(
-                        value: 0.7, // %70 ilerleme
+                        value: progress,
                         strokeWidth: 7,
                         color: Colors.blue[800],
                         backgroundColor: Colors.white,
                       ),
                     ),
-                    const Text('70%', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(
+                      '$percent%',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
+
+          // Dükkan Butonu
+          Positioned(
+            bottom: 90,
+            right: 30,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ShopPage()),
+                ).then((_) {
+                  setState(() {}); // Planlayıcıdan dönüldüğünde güncelle
+                });
+              },
+              child: Column(
+                children: [
+                  Image.asset('assets/shop.png', width: 50),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Dükkan',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
-
-      // Alt menü
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blue[800],
         selectedItemColor: Colors.white,
@@ -113,7 +152,16 @@ class HomePage extends StatelessWidget {
           ),
         ],
         onTap: (index) {
-          // yönlendirmeleri burada yapabilirsin
+          if (index == 1) {
+            // AI Koç sayfası (ileride eklenecek)
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PlannerPage()),
+            ).then((_) {
+              setState(() {}); // Planlayıcıya gidip gelince güncelle
+            });
+          }
         },
       ),
     );

@@ -156,9 +156,19 @@ https://sharing.clickup.com/90181413739/b/h/6-901809294193-2/89459ce95e30949
 ### 🖼️ **Screenshot**
 
 * Ana sayfa iskeleti Flutter’da çalıştırıldı:
-  ![Ana Sayfa Ekran Görüntüsü](#)
+  ![Ana Sayfa Ekran Görüntüsü](https://github.com/user-attachments/assets/65702f94-d7f5-4cf0-bb1f-c1303372dedb)
+
 * Profil ekranı temel iskeleti tamamlandı:
-  ![Profil Sayfası Ekran Görüntüsü](#)
+  ![Profil Sayfası Ekran Görüntüsü](https://github.com/user-attachments/assets/53926995-ec25-47cc-a67f-6cdef1998b16)
+  
+* Planlayıcı ekranı temel iskeleti tamamlandı:
+![WhatsApp Görsel 2025-07-06 saat 14 53 19_ad9e07e3](https://github.com/user-attachments/assets/f20f74b9-9169-4d33-a075-d70891f8a029)
+![WhatsApp Görsel 2025-07-06 saat 14 53 49_016688a2](https://github.com/user-attachments/assets/149be0ec-82b0-47f4-b2d2-e9d59e673494)
+![WhatsApp Görsel 2025-07-06 saat 14 54 02_9a5df3d2](https://github.com/user-attachments/assets/4bb25571-e884-4590-a6dd-7a6764d0701f)
+![WhatsApp Görsel 2025-07-06 saat 14 54 17_6c60f1b4](https://github.com/user-attachments/assets/c857d11f-7df5-4892-8619-0d2631a02f46)
+
+
+
 
 ---
 

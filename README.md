@@ -148,6 +148,8 @@ Sprint 1’de temel Flutter front-end iskeletini oluşturmak, backend akışın�
   •	Done: Tamamlanan görevler
 * Tüm görevler sorumlulara atanmış, ilerlemeleri düzenli olarak güncellenmiş ve etiketlenmiştir.
 
+🔗 ClickUp Sprint 1 Board Linki:
+https://sharing.clickup.com/90181413739/b/h/6-901809294193-2/89459ce95e30949
 
 ---
 

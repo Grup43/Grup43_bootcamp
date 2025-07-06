@@ -75,3 +75,124 @@ EduCoach aşağıdaki kullanıcı grupları için idealdir:
 
 5. **🏅 Rozet ve Sosyal Paylaşım**  
    Başarı rozetlerinin sosyal medyada paylaşımı ile viral yayılım.
+
+
+İşte **EduCoach Sprint 1 için Google Proje Yönetimi eğitimi yaklaşımı ve YZTA kılavuzuna tam uyumlu hazırlayabileceğin örnek Sprint 1 dökümasyonu**:
+
+---
+
+## 📘 **Sprint 1 Dökümantasyonu – EduCoach**
+
+### 🚩 **Sprint Dönemi**
+
+* **Başlangıç:** 20 Haziran 2025
+* **Bitiş:** 6 Temmuz 2025
+* **Süre:** 2 hafta
+
+### 🎯 **Sprint Amaç ve Hedefleri**
+
+Sprint 1’de temel Flutter front-end iskeletini oluşturmak, backend akışını belirlemek ve minimum çalışan prototipi hazırlamak hedeflenmiştir.
+
+**Tamamlanacak Görevler (User Stories):**
+
+* [x] Ana ekran, profil ekranı, planlayıcı ekran iskeletleri oluşturulması
+* [x] Flutter ortam kurulumu ve çalıştırılması
+* [x] GitHub repo kurulumu ve bağlantı
+* [x] Sesli AI Koç modülü için araştırma ve plan
+* [x] Takvim entegrasyonu için araştırma ve temel akışın hazırlanması
+* [x] Tasarım dosyalarının belirlenmesi (logo, renk paleti)
+
+---
+
+### 🧮 **Tahmin Edilen Tamamlanacak Puan**
+
+* Sprint 1 hedef puanı: **100 Puan**
+* Toplam 300 puanlık backlog için 3 sprint planında dengeli dağılımla belirlenmiştir.
+
+---
+
+### 📊 **Tahmin Mantığı**
+
+* UI iskeleti: 20 puan
+* Flutter kurulum, test ve çalıştırma: 15 puan
+* Sayfa geçiş ve navigation: 15 puan
+* GitHub entegrasyonu: 10 puan
+* Tasarım ve branding hazırlığı: 15 puan
+* AI Koç modülü araştırma: 10 puan
+* Takvim modülü araştırma ve plan: 15 puan
+* **Toplam:** 100 puan
+
+---
+
+### ☑️ **Daily Scrum**
+
+* Günlük Scrum’lar **Google Meet + WhatsApp** üzerinden videolu/mesajlaşarak gerçekleştirilmektedir.
+* Daily Scrum notları GitHub Sprint 1 klasörüne eklenmiştir.
+* Gündem: 
+
+  * Bir önceki gün yapılanlar
+
+  * Bugün yapılacaklar
+
+  * Karşılaşılan engelle
+---
+
+### 🗂️ **Sprint Board Updates**
+
+🗂️ Sprint Board Updates
+* Sprint 1 süresince proje yönetimi ClickUp Board üzerinden yürütülmüştür.
+* Görev akışları:
+  •	To Do: Yapılacak görevler
+  •	In Progress: Üzerinde çalışılan görevler
+  •	Review: Kontrol aşamasındaki görevler
+  •	Done: Tamamlanan görevler
+* Tüm görevler sorumlulara atanmış, ilerlemeleri düzenli olarak güncellenmiş ve etiketlenmiştir.
+
+
+---
+
+### 🖼️ **Screenshot**
+
+* Ana sayfa iskeleti Flutter’da çalıştırıldı:
+  ![Ana Sayfa Ekran Görüntüsü](#)
+* Profil ekranı temel iskeleti tamamlandı:
+  ![Profil Sayfası Ekran Görüntüsü](#)
+
+---
+
+### 📝 **Sprint Review**
+
+**Katılımcılar:**
+
+* Sena Yüksel (Scrum Master)
+* Zehra Ubay (Product Owner)
+* Farid Babayev (Developer)
+* Sude Başaran (Developer)
+* Muhammet Emre Çelik (Developer)
+
+**Toplantıda alınan kararlar:**
+
+* Flutter kurulumu başarıyla tamamlandı.
+* Ana sayfa, profil ve planlayıcı sayfalarının iskeleti tamamlandı.
+* Kod paylaşımı GitHub üzerinden sağlanıyor, commit düzenine dikkat ediliyor.
+* Takvim entegrasyonu için `table_calendar` paketi test edilecek.
+* AI Koç için Gemini API araştırmasına başlanacak.
+* Kullanıcı arayüzünde gamification unsurları için görsel asset araştırması yapılacak.
+
+---
+
+### 🔍 **Sprint Retrospective**
+
+* **İyi:** Takım içi iletişim düzenli ilerledi, çalışan ve stajyer ekip üyeleri görev paylaşımına katkı sağladı. Flutter kurulum ve proje iskeleti başarıyla tamamlandı.
+* **Geliştirilecek:** Takım üyelerinin günlük odak sürelerini artırması ve düzenli zaman ayırması gerektiği belirlendi.
+* **Karar:** Daily Scrum saatleri takım üyelerinin müsaitlik durumuna göre sprint boyu sabit  gerçekleştirilecek.
+* **Blokajlar:** Flutter paket yönetiminde yaşanan sorunlar çözüldü, ileriye dönük not alındı.
+* **Kararlar:**
+
+  * Flutter `provider` veya `riverpod` kullanımına karar verilecek.
+  * Tasarımda renk paleti ve icon seti belirleme Sprint 2’ye bırakıldı.
+  * Backend API endpointleri planlaması Sprint 2’ye alınacak.
+
+---
+
+

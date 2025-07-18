@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:educoach_flutter/services/gold_service.dart';
+import 'package:educoach_flutter/services/task_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -85,6 +87,24 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 20),
+              // İstatistik ve Oyunlaştırma Paneli
+              Card(
+                color: Colors.white.withOpacity(0.95),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Toplam Altın: ' + GoldService().totalGold.toStringAsFixed(1)),
+                      Text('Bugünkü Altın: ' + GoldService().todayGold.toStringAsFixed(1)),
+                      Text('Streak: ' + TaskService.streak.toString() + ' gün'),
+                      Text('Seviye: ' + (GoldService().totalGold ~/ 10 + 1).toString()),
+                      Text('Günlük Görev: ' + (TaskService.completedDailyGoal() ? 'Tamamlandı' : 'Yapılmadı')),
+                    ],
+                  ),
+                ),
+              ),
               TextFormField(
                 controller: _nameCtrl,
                 decoration: const InputDecoration(

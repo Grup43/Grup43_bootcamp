@@ -13,6 +13,7 @@ dependencies:
   intl: ^0.18.1
   table_calendar: ^3.0.6
   image_picker: ^0.8.7+4
+  sleek_circular_slider: ^2.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -20,4 +21,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - assets/garden.png
+    - assets/tree_1.png
+    - assets/tree_2.png
+    - assets/tree_3.png
+    - assets/tree_4.png
+    - assets/shop.png
+    - assets/garden_bg.png

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
-import '../services/task_service.dart'; // import TaskService
+import '../services/task_service.dart';
 
-// Görev modeli
 class Task {
   String title;
   bool isDone;
@@ -36,7 +36,6 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     super.dispose();
   }
 
-  // Yeni görev ekleme TaskService ile
   void _addTask(String taskTitle) {
     final key = DateFormat('yyyy-MM-dd').format(selectedDate);
     setState(() {
@@ -74,12 +73,84 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
+  void _showGeminiPlanningDialog(BuildContext context) {
+    DateTimeRange? selectedRange;
+    double dailyHours = 2;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Akıllı Planlama"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      final range = await showDateRangePicker(
+                        context: context,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 60)),
+                      );
+                      if (range != null) {
+                        setState(() => selectedRange = range);
+                      }
+                    },
+                    child: Text(
+                      selectedRange == null
+                          ? "Tarih aralığı seç"
+                          : "${DateFormat('dd MMM yyyy').format(selectedRange!.start)} → ${DateFormat('dd MMM yyyy').format(selectedRange!.end)}",
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text("Her gün kaç saat çalışmak istiyorsun?"),
+                  Slider(
+                    value: dailyHours,
+                    min: 1,
+                    max: 8,
+                    divisions: 7,
+                    label: "${dailyHours.toInt()} saat",
+                    onChanged: (val) => setState(() => dailyHours = val),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("İptal"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (selectedRange != null) {
+                      Navigator.pop(context);
+                      _generateGeminiPlan(selectedRange!, dailyHours.toInt());
+                    }
+                  },
+                  child: const Text("Planla"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[800],
         title: const Text('Planlayıcı'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.auto_awesome),
+            tooltip: "Akıllı Planla",
+            onPressed: () => _showGeminiPlanningDialog(context),
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: tabs.map((label) => Tab(text: label)).toList(),
@@ -96,7 +167,6 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
-  // Günlük görünüm
   Widget buildDailyView() {
     final key = DateFormat('yyyy-MM-dd').format(selectedDate);
     final tasks = TaskService.dailyTasks[key] ?? [];
@@ -174,14 +244,12 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
-  // Haftalık görünüm
   Widget buildWeeklyView() {
     final firstDay = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
     final weekDays = List.generate(7, (i) => firstDay.add(Duration(days: i)));
 
     return Column(
       children: [
-        // Haftalık gün seçme çubuğu
         Container(
           height: 80,
           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -192,8 +260,6 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
               final day = weekDays[idx];
               final key = DateFormat('yyyy-MM-dd').format(day);
               final tasks = TaskService.dailyTasks[key] ?? [];
-              final todo = tasks.where((t) => !t.isDone).toList();
-              final done = tasks.where((t) => t.isDone).toList();
               final isSelected = DateFormat('yyyy-MM-dd').format(day) == DateFormat('yyyy-MM-dd').format(selectedDate);
 
               return GestureDetector(
@@ -237,7 +303,6 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
-  // Aylık görünüm
   Widget buildMonthlyView() {
     return Column(
       children: [
@@ -248,9 +313,7 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
           focusedDay: selectedDate,
           calendarFormat: CalendarFormat.month,
           selectedDayPredicate: (day) => isSameDay(day, selectedDate),
-          onDaySelected: (selectedDay, focusedDay) {
-            setState(() => selectedDate = selectedDay);
-          },
+          onDaySelected: (selectedDay, focusedDay) => setState(() => selectedDate = selectedDay),
           headerStyle: const HeaderStyle(
             formatButtonVisible: false,
             titleCentered: true,
@@ -261,5 +324,57 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
       ],
     );
   }
-}
 
+  void _generateGeminiPlan(DateTimeRange dateRange, int dailyHours) async {
+    final allTasks = TaskService.dailyTasks.values.expand((tasks) => tasks).toList();
+    final todoTitles = allTasks.where((task) => !task.isDone).map((task) => task.title).toList();
+
+    if (todoTitles.isEmpty) {
+      _showPlanSuggestionDialog("Hiç yapılacak görev bulunamadı. Lütfen önce görev ekleyin.");
+      return;
+    }
+
+    final prompt = """
+Kullanıcının yapılacaklar listesi:
+
+${todoTitles.map((t) => "- $t").join("\n")}
+
+Kullanıcı bu görevleri aşağıdaki tarih aralığında ve her gün belirli saat çalışarak tamamlamak istiyor:
+
+- Başlangıç tarihi: ${DateFormat('yyyy-MM-dd').format(dateRange.start)}
+- Bitiş tarihi: ${DateFormat('yyyy-MM-dd').format(dateRange.end)}
+- Günlük çalışma süresi: $dailyHours saat
+
+Lütfen her gün hangi görevleri çalışması gerektiğini ve yaklaşık hangi sırayla çalışacağını gösteren bir günlük plan öner.
+Yanıt Türkçe ve açık anlaşılır biçimde olmalı.
+""";
+
+    final apiKey = 'YOUR_API_KEY_HERE'; // ← Buraya doğrudan API key'i yaz
+
+    final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+
+    try {
+      final response = await model.generateContent([Content.text(prompt)]);
+      final result = response.text ?? "Cevap alınamadı.";
+      _showPlanSuggestionDialog(result);
+    } catch (e) {
+      _showPlanSuggestionDialog("Bir hata oluştu: $e");
+    }
+  }
+
+  void _showPlanSuggestionDialog(String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Gemini Planlama Önerisi"),
+        content: SingleChildScrollView(child: Text(content)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Kapat"),
+          ),
+        ],
+      ),
+    );
+  }
+}

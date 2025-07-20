@@ -7,9 +7,10 @@ import 'pages/home_page.dart';
 import 'pages/planner_page.dart';
 import 'pages/coach_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('tr_TR', null);
+
   runApp(const EduCoachApp());
 }
 
@@ -28,7 +29,7 @@ class EduCoachApp extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
         '/planner': (context) => const PlannerPage(),
-        '/coach': (context) =>  CoachPage(),
+        '/coach': (context) => CoachPage(),
       },
     );
   }

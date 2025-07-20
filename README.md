@@ -218,4 +218,175 @@ Planlayıcı ekranının temel iskeleti aşağıdaki gibidir:
 
 ---
 
+🏃‍♂️ Sprint 2 – Çekirdek Modül İşlevselliği ve Entegrasyonlar
+
+Sprint Dönemi: 7 Temmuz 2025 – 20 Temmuz 2025
+Sprint Süresi: 2 Hafta
+
+Sprint Kapsamı: AI Koç'un temel etkileşim mekaniğini, otomatik Planlayıcı Modülü'nün program oluşturma becerisini ve Ödül Sistemi'nin ana mekaniklerini geliştirmek ve entegre etmek hedeflenmiştir.
+
+🎯 Sprint Amaç ve Hedefleri
+Sprint 2'de, EduCoach AI'ın kullanıcı deneyimini zenginleştiren ana özelliklerin işlevsel hale getirilmesi odaklanılmıştır. Bu sprint sonunda kullanıcılar, kişiselleştirilmiş ders planları oluşturabilecek, görevleri tamamladıkça ödül kazanabilecek ve uygulamanın görsel kimliği daha belirgin hale gelecektir.
+
+✅ Tamamlananlar (Sprint Notes)
+Bu sprintte aşağıdaki ana özellikler ve geliştirmeler tamamlanmıştır:
+
+🪙 Ödül Sistemi ve Gamification:
+
+Altın Kazanma Mekaniği: Kullanıcının ana sayfada yer alan "Ders Çalış" butonu ile başlattığı zamanlayıcı (15dk, 30dk, 1s, 2s seçenekleriyle) tamamlandığında otomatik olarak altın kazanması sağlandı. Erken bitirilen çalışmalar için ödül verilmiyor.
+
+Günlük Altın Limiti: Günlük altın limiti aşıldığında kullanıcıya uyarı veren sistem entegre edildi.
+
+Streak (Seri) Takibi: Arka arkaya günler boyunca çalışma takibi (streak) özelliği eklendi. 3, 5, 10 gün gibi belirlenen serilerde bonus altın ödülleri verildi.
+
+Görev Tamamlama Kontrolü: Günlük görev tamamlama durumu izlenerek ana sayfa ve profil ekranında gösterimi yapıldı.
+
+Ana Sayfa ve Profilde Ödül Göstergeleri: Kullanıcıya ait toplam altın, günlük kazanılan altın miktarı, streak ve günlük görev durumu ana sayfanın sağ üst köşesinde ve profil ekranında gösteriliyor. Seviye sistemi (10 altın = 1 seviye) entegre edildi.
+
+İlgili Görseller:
+
+Ana Sayfa (Altın ve Başarı Göstergeleri)
+
+<img width="400" height="500" alt="image" src="https://github.com/user-attachments/assets/9e3db143-ec2d-438c-8c90-6e3dea3e8067" />
+
+Ana Sayfa (Odaklanma Seçenekleri):
+
+<img width="400" height="500" alt="image" src="https://github.com/user-attachments/assets/07258438-2599-40f7-8c38-66be89bf06da" />
+
+Ana Sayfa (Zamanlayıcı Gösterimi):
+
+<img width="400" height="500" alt="image" src="https://github.com/user-attachments/assets/ef20c0a8-3c8b-4a9e-89c6-7b56a6a1a52e" />
+
+Profil Ekranı (Altın, Streak, Seviye):
+
+<img width="400" height="500" alt="image" src="https://github.com/user-attachments/assets/63c2fd43-ebd6-4d0a-bb39-ad5c9ab52a67" />
+
+Sanal Ürün Mağazası (Dükkan): Kullanıcıların kazandıkları altınlar ile sanal ürünler (çiçek, ağaç, bahçe arka planı, avatar aksesuarları) satın alabileceği "Dükkan" modülü geliştirildi. Yetersiz altın durumunda uyarı sistemi eklendi, satın alım yapıldığında altın bakiyesinden düşüş gerçekleşiyor.
+
+İlgili Görsel:
+
+<img width="400" height="500" alt="image" src="https://github.com/user-attachments/assets/2ae190b5-aa0e-4408-a133-e1f69a2bc349" />
+
+🗓️ Planlayıcı Modülü:
+
+Otomatik Program Oluşturma Algoritması: Python backend (Flask) ile sınav adı, konular, başlangıç/bitiş tarihi, günlük çalışma saati ve yoğunluk seviyesi gibi parametreleri kullanarak otomatik çalışma planı oluşturan algoritma geliştirildi.
+
+API Entegrasyonu: Flutter frontend'in Python backend'deki planlama API'si ile iletişim kurması sağlandı.
+
+Kullanıcı Giriş Formu: Kullanıcıdan planlama parametrelerini alacak detaylı arayüz (sınav, konu listesi, tarihler, saatler, yoğunluk) tasarlandı ve uygulandı.
+
+İlgili Görsel:
+
+<img width="400" height="500" alt="image" src="https://github.com/user-attachments/assets/c43a7a1b-e52f-4ef1-a202-7dd11fddd2bd" />
+
+AI Destekli Öneri Sistemi: Planlayıcı modülüne Gemini API kullanılarak (ML modelleriyle) kişiselleştirilmiş planlama önerileri sunan temel bir akış entegre edildi. Bu sayede kullanıcıya sadece süreye dayalı değil, aynı zamanda AI destekli içerik önerileri de sağlanıyor.
+
+İlgili Görsel:
+
+<img width="400" height="500" alt="image" src="https://github.com/user-attachments/assets/92c3f79a-c8fc-4d7e-9a43-2e2dc95225c3" />
+
+
+☁️ Firebase Entegrasyonu:
+
+Kurulum ve Bağlantı: Firebase projesi (EduCoach Grup43) konsoldan oluşturuldu ve Firebase CLI ile yerel dizine bağlandı.
+
+Hizmet Etkinleştirme: Firestore (veritabanı), Authentication (kimlik doğrulama) ve Hosting (opsiyonel web yayınlama) özellikleri etkinleştirildi.
+
+Emülatör Kurulumu: Yerel geliştirme ve test için Firebase Emulators (Authentication, Firestore, Hosting) başarıyla kuruldu ve yapılandırıldı. Bu, geliştirme süreçlerini hızlandırdı ve gerçek servislere bağımlılığı azalttı.
+
+Uygulama Bağlantısı: Flutter uygulamasının (firebase_core, firebase_auth, cloud_firestore paketleri ile) Firebase'e bağlanması sağlandı. Python backend'i (firebase-admin ile) emülatörlere bağlanacak şekilde yapılandırıldı.
+
+📊 Veri Bilimi Altyapısı:
+
+Öneri sistemi ve öğrenme analitiği için temel bir dummy veri seti oluşturuldu. ML ile geliştirme için ön hazırlıklar yapıldı. FastAPI ile entegrasyonun temelleri atıldı.
+
+🧮 Tahmin Edilen Tamamlanacak Puan
+Hedef: 100 Puan
+
+Bu sprintte tamamlanan temel özellikler için puan dağılımı şu şekildedir:
+
+Ödül Sistemi ve Gamification (Altın, Streak, Dükkan): 40 SP
+
+Planlayıcı Modülü (Python Algoritması ve Flutter UI): 35 SP
+
+AI Destekli Planlama Önerisi (Gemini API): 15 SP
+
+Firebase Entegrasyonu (Uygulama ve Python Bağlantısı): 10 SP
+
+Uygulama Teması ve Responsive Tasarım: 10 SP
+
+Genel İyileştirmeler ve Proje Yönetimi: 5 SP
+
+Dummy Veri Seti Oluşturma: 5 SP
+
+Toplam Tamamlanan Puan: 120 SP (Hedefin üzerinde, başarılı bir sprint!)
+
+📊 Tahmin Mantığı
+Google PM metodolojisine uygun olarak, görevler büyüklük ve karmaşıklıklarına göre puanlanmıştır. Özellikle AI/backend entegrasyonları, karmaşık algoritmalar ve kapsamlı UI modülleri yüksek puan almıştır. Takımın kapasitesi ve önceki sprintteki velocity dikkate alınarak tahminde bulunulmuştur.
+
+☑️ Daily Scrum
+Günlük Scrum toplantıları Zoom üzerinden (katılımcılar: Zehra Ubay, M. Emre Çelik, Farid Babayev, Sena Yüksel, Sude Başaran) ve WhatsApp üzerinden mesajlaşarak düzenli olarak gerçekleştirilmiştir.
+
+İlgili Görsel:
+
+<img width="300" height="600" alt="image" src="https://github.com/user-attachments/assets/45756331-24cc-4511-8f31-4810ae3ec3bc" />
+
+
+Daily Scrum notları ve engel takibi GitHub Sprint 2 klasörüne eklenmiştir.
+Gündem: Bir önceki gün yapılanlar, bugün yapılacaklar, karşılaşılan engeller ve çözümleri.
+
+🗂️ Sprint Board Updates
+Sprint 2 süresince proje yönetimi ClickUp Board üzerinden aktif olarak yürütülmüştür. Görev akışları (To Do, In Progress, Review, Done) düzenli olarak güncellenmiş ve etiketlenmiştir.
+
+ClickUp Sprint 2 Board Linki: [Link buraya eklenebilir]
+
+İlgili Görsel:
+
+<img width="600" height="400" alt="Ekran görüntüsü 2025-07-20 230847" src="https://github.com/user-attachments/assets/fea4c310-d7c1-4e12-8a78-6dfb37d674e6" />
+
+📝 Sprint Review
+Katılımcılar: Sena Yüksel (Scrum Master), Zehra Ubay (Product Owner), Farid Babayev (Developer), Sude Başaran (Developer), Muhammet Emre Çelik (Developer).
+
+Toplantıda Alınan Kararlar ve Sunulanlar:
+
+Ödül sistemi ve gamification modülü, kullanıcıların motivasyonunu artıracak şekilde başarıyla entegre edildi.
+
+Planlayıcı modülü, Python backend'deki algoritma ve Flutter UI entegrasyonuyla işlevsel hale getirildi, kişiselleştirilmiş planlar oluşturulabiliyor.
+
+AI destekli planlama önerileri, Gemini API entegrasyonu sayesinde projenin temel AI yeteneğini gösterdi.
+
+Firebase (Auth, Firestore, Emulators) bağlantıları sorunsuz bir şekilde kuruldu, veritabanı ve kimlik doğrulama işlemleri yerel olarak test edilebilir hale geldi.
+
+🔍 Sprint Retrospective
+✅ Neler iyi gitti:
+
+Takım, belirlenen sprint hedeflerinin üzerinde bir performans sergileyerek daha fazla puan tamamladı.
+
+Python backend ile Flutter frontend entegrasyonu başarıyla sağlandı.
+
+Firebase entegrasyonu ve emülatör kullanımı, geliştirme sürecini hızlandırdı.
+
+Gamification ve planlama gibi temel modüllerin işlevsel hale gelmesi, projenin MVP (Minimum Viable Product) hedefine yaklaştığını gösterdi.
+
+⚠️ Neler kötü gitti (Geliştirilecek Alanlar):
+
+Bazı durumlarda günlük odak sürelerinde tutarsızlıklar yaşandı.
+
+API hatalarının daha detaylı loglanması ve hata mesajlarının kullanıcıya daha anlaşılır sunulması gerektiği fark edildi.
+
+🛠️ İyileştirmeler ve Sonraki Adımlar (Sprint 3 için Kararlar):
+
+Takım üyeleri, günlük odak sürelerini daha verimli kullanmak için kişisel zaman yönetim tekniklerini gözden geçirecek.
+
+Öğrenme Analitiği modülüne ağırlık verilecek ve ML tabanlı öneri sistemleri geliştirilecek.
+
+Kullanıcı geri bildirim toplama mekanizması entegre edilecek.
+
+Tanıtım videosu ve demo sayfasının hazırlanmasına başlanacak.
+
+Uygulamanın performans testleri ve kapsamlı hata ayıklaması yapılacak.
+
+Firebase'deki Firestore güvenlik kuralları detaylandırılacak ve gerçek veri güvenliği sağlanacak.
+
+Profil ekranındaki "Çalışılan Sınav", "Günde Planlanan Çalışma Saatleri" gibi bilgiler Firebase'e kaydedilip profil düzenleme özelliği aktif edilecek.
 

@@ -1,7 +1,52 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:educoach_flutter/services/gold_service.dart';
+import 'package:educoach_flutter/services/task_service.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameCtrl = TextEditingController();
+  String _selectedExam = 'YKS';
+  final List<String> _exams = ['YKS', 'LGS', 'TOEFL', 'ALES'];
+  final TextEditingController _hoursCtrl = TextEditingController(text: '1');
+  final TextEditingController _departmentCtrl = TextEditingController();
+
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _hoursCtrl.dispose();
+    _departmentCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _profileImage = File(picked.path);
+      });
+    }
+  }
+
+  void _saveProfile() {
+    if (_formKey.currentState!.validate()) {
+      // TODO: Kaydedilen bilgileri backend ya da local storage'a gönder
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profil kaydedildi!')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,47 +55,119 @@ class ProfilePage extends StatelessWidget {
         title: const Text('Profilim'),
         backgroundColor: Colors.blue[800],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 30),
-
-            // Profil fotoğrafı
-            const CircleAvatar(
-              radius: 50,
-              backgroundImage: AssetImage('assets/profile_pic.png'), // Profil resmi eklemeyi unutma
-            ),
-            const SizedBox(height: 20),
-
-            // Kullanıcı adı
-            const Text(
-              'Sena Yüksel',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-
-            const Text(
-              '11113',
-              style: TextStyle(fontSize: 16, color: Colors.black54),
-            ),
-
-            const SizedBox(height: 40),
-
-            // Çıkış butonu
-            ElevatedButton.icon(
-              icon: const Icon(Icons.logout),
-              label: const Text('Çıkış Yap'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[600],
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: _profileImage != null
+                          ? FileImage(_profileImage!) as ImageProvider
+                          : const AssetImage('assets/profile_pic.png'),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: _pickImage,
+                        child: CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.blue[800],
+                          child: const Icon(Icons.edit, size: 18, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              onPressed: () {
-                Navigator.pop(context); // Şimdilik sadece geri dönüyor
-              },
-            ),
-          ],
+              const SizedBox(height: 20),
+              // İstatistik ve Oyunlaştırma Paneli
+              Card(
+                color: Colors.white.withOpacity(0.95),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Toplam Altın: ' + GoldService().totalGold.toStringAsFixed(1)),
+                      Text('Bugünkü Altın: ' + GoldService().todayGold.toStringAsFixed(1)),
+                      Text('Streak: ' + TaskService.streak.toString() + ' gün'),
+                      Text('Seviye: ' + (GoldService().totalGold ~/ 10 + 1).toString()),
+                      Text('Günlük Görev: ' + (TaskService.completedDailyGoal() ? 'Tamamlandı' : 'Yapılmadı')),
+                    ],
+                  ),
+                ),
+              ),
+              TextFormField(
+                controller: _nameCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Ad Soyad',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value!.isEmpty ? 'Lütfen adınızı girin' : null,
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedExam,
+                decoration: const InputDecoration(
+                  labelText: 'Çalışılan Sınav',
+                  prefixIcon: Icon(Icons.school),
+                  border: OutlineInputBorder(),
+                ),
+                items: _exams.map((exam) {
+                  return DropdownMenuItem(
+                    value: exam,
+                    child: Text(exam),
+                  );
+                }).toList(),
+                onChanged: (val) => setState(() => _selectedExam = val!),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _hoursCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Günde Planlanan Çalışma Saat(ler)i',
+                  prefixIcon: Icon(Icons.access_time),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Lütfen saat girin';
+                  final num? hours = num.tryParse(value);
+                  return (hours == null || hours <= 0) ? 'Geçerli bir sayı girin' : null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _departmentCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'İstenen Bölüm',
+                  prefixIcon: Icon(Icons.work),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value!.isEmpty ? 'Lütfen bölüm girin' : null,
+              ),
+              const SizedBox(height: 24),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[800],
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Text('Bilgileri Kaydet'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

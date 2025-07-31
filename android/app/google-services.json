@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "786010809670",
+    "project_id": "bootcampgrup43",
+    "storage_bucket": "bootcampgrup43.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786010809670:android:b28c817bf071e6d5c6f147",
+        "android_client_info": {
+          "package_name": "com.example.educoach_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1PGfgFRVR7I8VbQb-ADwDjckfRFtQ8NA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

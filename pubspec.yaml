@@ -10,12 +10,28 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.19.0 # (varsa login olacaksa ekleyelim)
+  intl: ^0.18.1
+  table_calendar: ^3.0.6
+  image_picker: ^0.8.7+4
+  sleek_circular_slider: ^2.0.1
+  google_generative_ai: ^0.3.0
+  flutter_dotenv: ^5.2.1
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutterfire_cli: ^1.3.1
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - assets/garden.png
+    - assets/tree_1.png
+    - assets/tree_2.png
+    - assets/tree_3.png
+    - assets/tree_4.png
+    - assets/shop.png
+    - assets/garden_bg.png

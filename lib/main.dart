@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'firebase_options.dart';
 import 'pages/login_page.dart';
@@ -12,6 +13,15 @@ import 'pages/coach_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // ✅ .env dosyasını yükle
+  try {
+    await dotenv.load(fileName: ".env");
+    print('✅ .env loaded successfully');
+  } catch (e) {
+    print('❌ Failed to load .env: $e');
+  }
+
+  // ✅ Firebase'i başlat
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -21,6 +31,7 @@ Future<void> main() async {
     print('❌ Firebase initialization failed: $e');
   }
 
+  // ✅ Türkçe tarih formatlarını yükle
   await initializeDateFormatting('tr_TR', null);
 
   runApp(const EduCoachApp());
@@ -41,7 +52,7 @@ class EduCoachApp extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
         '/planner': (context) => const PlannerPage(),
-        '/coach': (context) => CoachPage(),
+        '/coach': (context) => const CoachPage(),
       },
     );
   }

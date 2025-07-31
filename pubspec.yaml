@@ -28,6 +28,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - .env
     - assets/garden.png
     - assets/tree_1.png
     - assets/tree_2.png

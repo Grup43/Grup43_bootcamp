@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../services/task_service.dart';
 
 class Task {
   String title;
-  bool isDone;
+  bool isDone;  
 
   Task(this.title, {this.isDone = false});
 }
@@ -167,6 +168,7 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
+  // ✅ DAILY VIEW
   Widget buildDailyView() {
     final key = DateFormat('yyyy-MM-dd').format(selectedDate);
     final tasks = TaskService.dailyTasks[key] ?? [];
@@ -244,6 +246,7 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
+  // ✅ WEEKLY VIEW
   Widget buildWeeklyView() {
     final firstDay = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
     final weekDays = List.generate(7, (i) => firstDay.add(Duration(days: i)));
@@ -258,9 +261,8 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
             itemCount: weekDays.length,
             itemBuilder: (context, idx) {
               final day = weekDays[idx];
-              final key = DateFormat('yyyy-MM-dd').format(day);
-              final tasks = TaskService.dailyTasks[key] ?? [];
-              final isSelected = DateFormat('yyyy-MM-dd').format(day) == DateFormat('yyyy-MM-dd').format(selectedDate);
+              final isSelected = DateFormat('yyyy-MM-dd').format(day) ==
+                  DateFormat('yyyy-MM-dd').format(selectedDate);
 
               return GestureDetector(
                 onTap: () => setState(() => selectedDate = day),
@@ -303,6 +305,7 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
+  // ✅ MONTHLY VIEW
   Widget buildMonthlyView() {
     return Column(
       children: [
@@ -349,8 +352,7 @@ Lütfen her gün hangi görevleri çalışması gerektiğini ve yaklaşık hangi
 Yanıt Türkçe ve açık anlaşılır biçimde olmalı.
 """;
 
-    final apiKey = 'AIzaSyAuQNZ2-9h8OURjs132E3OUljwPoczzpv8'; // ← Buraya doğrudan API key'i yaz
-
+    final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
     final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
 
     try {

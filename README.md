@@ -468,3 +468,76 @@ Firebase'deki Firestore güvenlik kuralları detaylandırılacak ve gerçek veri
 Profil ekranındaki "Çalışılan Sınav", "Günde Planlanan Çalışma Saatleri" gibi bilgiler Firebase'e kaydedilip profil düzenleme özelliği aktif edilecek.
 
 >>>>>>> 982e0d9429f0e4b65081fa51524ad63a2a01b829
+
+
+---
+
+## 🚀 Sprint 3 – Envanter ve Mağaza Geliştirmeleri
+
+### 📅 Sprint Tarihleri
+
+* **Başlangıç:** 21 Temmuz 2025
+* **Bitiş:** 3 Ağustos 2025
+* **Süre:** 2 Hafta
+
+### 🎯 Amaç ve Hedefler
+
+Sprint 3’te kullanıcıların kazandıkları coinleri kullanarak ürünler satın alabileceği, satın alınan ürünlerin listelenebileceği ve uygulamanın oyunlaştırma (gamification) deneyiminin güçlendirileceği özellikler geliştirildi.
+
+---
+
+### ✅ Tamamlanan Özellikler
+
+* 🛍️ **Mağaza İşlevselliği**
+
+  * Kullanıcılar coin harcayarak ürün satın alabilir.
+  * Satın alma sırasında Firestore üzerinde coin düşümü ve ürün kaydı yapılır.
+
+* 📦 **Envanter Sayfası**
+
+  * Satın alınan ürünler “Envanter” sekmesinde listelenir.
+  * Satın alma tarihi ve ürün bilgileri kullanıcıya gösterilir.
+  * Alt menüdeki “AI Koç” sekmesi kaldırılarak yerine “Envanter” eklendi.
+
+* 🔑 **StoreService Yeniden Düzenleme**
+
+  * Coin düşürme ve ürün ekleme işlemleri Firestore üzerinden yeniden yapılandırıldı.
+  * Gereksiz “active item” kodları kaldırılarak basitleştirme sağlandı.
+
+* 🎨 **UI İyileştirmeleri**
+
+  * Coin göstergesi “Coins” olarak güncellendi.
+  * Envanterde ürünlerin daha düzenli ve anlaşılır listelenmesi sağlandı.
+
+---
+
+### 🖼️ Ekran Görselleri
+
+#### 🏠 Ana Sayfa
+
+<img src="https://github.com/user-attachments/assets/XXXXX" width="400"/>
+
+#### 🛍️ Mağaza
+
+<img src="https://github.com/user-attachments/assets/YYYYY" width="400"/>
+
+#### 📦 Envanter
+
+<img src="https://github.com/user-attachments/assets/ZZZZZ" width="400"/>
+
+---
+
+### 📝 Sprint Review
+
+* Coin tabanlı satın alma akışı başarıyla çalışıyor.
+* Envanter sistemi kullanıcıya alınan ürünleri takip etme imkanı sunuyor.
+* Tüm işlemler Firebase Firestore ile entegre ve kalıcı veri sağlanıyor.
+
+### 🔄 Sprint Retrospective
+
+* **İyi:** Gamification unsurları güçlendirildi, kullanıcı deneyimi arttı.
+* **İyileştirilecek:** Bir sonraki sprintte satın alınan ürünlerin bahçede görsel olarak kullanılabilir hale getirilmesi ve item aktif/pasif özelliği eklenmesi planlanıyor.
+
+
+
+

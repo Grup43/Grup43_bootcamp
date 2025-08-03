@@ -515,15 +515,15 @@ Sprint 3’te kullanıcıların kazandıkları coinleri kullanarak ürünler sat
 
 #### 🏠 Ana Sayfa
 
-<img src="https://github.com/user-attachments/assets/XXXXX" width="400"/>
+![WhatsApp Görsel 2025-08-03 saat 22 50 17_897b89f1](https://github.com/user-attachments/assets/92d5760d-17c1-4a9c-b685-9646dffabb61)
 
 #### 🛍️ Mağaza
 
-<img src="https://github.com/user-attachments/assets/YYYYY" width="400"/>
+![WhatsApp Görsel 2025-08-03 saat 22 50 17_969a81a6](https://github.com/user-attachments/assets/20ee1608-d987-40f3-ab35-77c1120b9160)
 
 #### 📦 Envanter
 
-<img src="https://github.com/user-attachments/assets/ZZZZZ" width="400"/>
+![WhatsApp Görsel 2025-08-03 saat 22 50 17_353b28e3](https://github.com/user-attachments/assets/013817f9-3233-46e9-9279-7fa008aed6eb)
 
 ---
 

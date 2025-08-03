@@ -8,7 +8,7 @@ import 'pages/login_page.dart';
 import 'pages/register_page.dart';
 import 'pages/home_page.dart';
 import 'pages/planner_page.dart';
-import 'pages/coach_page.dart';
+import 'pages/inventory_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +52,7 @@ class EduCoachApp extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
         '/planner': (context) => const PlannerPage(),
-        '/coach': (context) => const CoachPage(),
+'/inventory': (context) => const InventoryPage(),
       },
     );
   }

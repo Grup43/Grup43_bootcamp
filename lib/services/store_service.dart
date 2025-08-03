@@ -60,4 +60,18 @@ class StoreService {
 
     return query.docs.map((doc) => doc.data()).toList();
   }
+
+  /// Tüm ürünleri getir
+  Future<List<Map<String, dynamic>>> getUserItems() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return [];
+
+    final snapshot = await _db
+        .collection('userInventory')
+        .doc(user.uid)
+        .collection('items')
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
 }

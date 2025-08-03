@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:educoach_flutter/pages/planner_page.dart';
+import 'package:educoach_flutter/pages/inventory_page.dart'; // ✅ yeni sayfa
 import 'package:educoach_flutter/services/gold_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -321,11 +322,18 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: Colors.white70,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
-          BottomNavigationBarItem(icon: Icon(Icons.mic), label: 'AI Koç'),
+          BottomNavigationBarItem(icon: Icon(Icons.inventory), label: 'Envanter'), // ✅ değişti
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Planlayıcı'),
         ],
         onTap: (index) {
-          if (index == 2) {
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const InventoryPage()), // ✅ yeni sayfa
+            ).then((_) {
+              setState(() {});
+            });
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const PlannerPage()),

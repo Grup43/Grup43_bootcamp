@@ -1,46 +1,63 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+class StoreService {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-Future<bool> purchaseItem(int cost) async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return false;
+  /// Ürün satın alma ve coin düşürme
+  Future<void> purchaseItem(String itemId, double price) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
-  final docRef = FirebaseFirestore.instance.collection('userStats').doc(user.uid);
+    final userStatsRef = _db.collection('userStats').doc(user.uid);
+    final inventoryRef = _db
+        .collection('userInventory')
+        .doc(user.uid)
+        .collection('items')
+        .doc(itemId);
 
-  try {
-    return FirebaseFirestore.instance.runTransaction((transaction) async {
-      final snapshot = await transaction.get(docRef);
+    await _db.runTransaction((transaction) async {
+      final statsSnapshot = await transaction.get(userStatsRef);
+      final currentCoins = (statsSnapshot['coins'] ?? 0).toDouble();
 
-      if (!snapshot.exists) {
-        return false;
+      if (currentCoins >= price) {
+        transaction.update(userStatsRef, {'coins': currentCoins - price});
+
+        transaction.set(inventoryRef, {
+          'active': true,
+          'purchasedAt': FieldValue.serverTimestamp(),
+        });
+      } else {
+        throw Exception("Yetersiz coin!");
       }
-
-      int coins = (snapshot.data()?['coins'] ?? 0);
-
-      if (coins < cost) {
-        return false;
-      }
-
-      coins = (coins - cost).clamp(0, double.infinity).toInt();
-
-      transaction.update(docRef, {'coins': coins});
-      return true;
     });
-  } catch (e) {
-    print("Purchase failed: $e");
-    return false;
   }
-}
 
-Future<int> getUserCoins() async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return 0;
+  /// Kullanıcı ürününü aktif eder
+  Future<void> activateItem(String itemId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
-  final doc = await FirebaseFirestore.instance
-      .collection('userStats')
-      .doc(user.uid)
-      .get();
+    await _db
+        .collection('userInventory')
+        .doc(user.uid)
+        .collection('items')
+        .doc(itemId)
+        .set({'active': true}, SetOptions(merge: true));
+  }
 
-  return doc.data()?['coins'] ?? 0;
+  /// Aktif ürünleri getir
+  Future<List<Map<String, dynamic>>> getActiveItems() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return [];
+
+    final query = await _db
+        .collection('userInventory')
+        .doc(user.uid)
+        .collection('items')
+        .where('active', isEqualTo: true)
+        .get();
+
+    return query.docs.map((doc) => doc.data()).toList();
+  }
 }

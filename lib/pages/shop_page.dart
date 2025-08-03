@@ -1,81 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../services/store_service.dart';
+import 'package:educoach_flutter/services/store_service.dart';
+import 'package:educoach_flutter/services/gold_service.dart';
 
 class ShopPage extends StatefulWidget {
-  const ShopPage({super.key});
+  const ShopPage({Key? key}) : super(key: key);
 
   @override
-  State<ShopPage> createState() => _ShopPageState();
+  _ShopPageState createState() => _ShopPageState();
 }
 
 class _ShopPageState extends State<ShopPage> {
-  final List<_ShopItem> items = [
-    _ShopItem('Çiçek', 1, 'assets/tree_3.png'),
-    _ShopItem('Pembe Ağaç', 2, 'assets/tree_4.png'),
-    _ShopItem('Bahçe Arka Planı', 3, 'assets/garden_bg.png'),
-    _ShopItem('Altın Taç (Avatar)', 5, null),
+  final StoreService _storeService = StoreService();
+
+  final List<Map<String, dynamic>> _items = [
+    {'id': 'flower_1', 'name': 'Çiçek 1', 'price': 2.0},
+    {'id': 'tree_1', 'name': 'Ağaç 1', 'price': 5.0},
+    {'id': 'bench_1', 'name': 'Bank 1', 'price': 3.0},
   ];
+
+  Future<void> _buyItem(String itemId, double price) async {
+    try {
+      await _storeService.purchaseItem(itemId, price);
+      await GoldService().loadGoldFromFirestore();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$itemId başarıyla satın alındı ve aktif edildi!')),
+      );
+
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Satın alma başarısız: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final String userId = FirebaseAuth.instance.currentUser!.uid;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dükkan'),
         backgroundColor: Colors.blue[800],
-        actions: [
-          StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('userStats')
-                .doc(userId)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text("Coins: 0"),
-              );
-              int coins = snapshot.data?['coins'] ?? 0;
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text("Coins: $coins"),
-              );
-            },
-          ),
-        ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: items.map((item) => Card(
-          child: ListTile(
-            leading: item.assetPath != null 
-                ? Image.asset(item.assetPath!, width: 40, height: 40, errorBuilder: (c,e,s)=>const Icon(Icons.image)) 
-                : const Icon(Icons.emoji_events, color: Colors.amber, size: 40),
-            title: Text(item.name),
-            subtitle: Text('${item.price} altın'),
+      body: ListView.builder(
+        itemCount: _items.length,
+        itemBuilder: (context, index) {
+          final item = _items[index];
+          return ListTile(
+            leading: const Icon(Icons.shopping_bag),
+            title: Text(item['name']),
             trailing: ElevatedButton(
-              onPressed: () async {
-                bool success = await purchaseItem(item.price);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success 
-                      ? 'Satın alındı!' 
-                      : 'Yetersiz altın')),
-                );
-              },
-              child: const Text('Satın Al'),
+              onPressed: () => _buyItem(item['id'], item['price']),
+              child: Text('${item['price']} Coins'),
             ),
-          ),
-        )).toList(),
+          );
+        },
       ),
     );
   }
-}
-
-class _ShopItem {
-  final String name;
-  final int price;
-  final String? assetPath;
-  _ShopItem(this.name, this.price, this.assetPath);
 }

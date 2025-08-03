@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:educoach_flutter/pages/planner_page.dart';
 import 'package:educoach_flutter/services/gold_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'profile_page.dart';
 import 'shop_page.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
@@ -78,7 +80,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text('Derin Odaklanma', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('Yalnızca izinli listedeki uygulamalara erişilebilir.', style: TextStyle(fontSize: 12)),
+                Text('İzinli uygulamalar dışında erişim kapalı.', style: TextStyle(fontSize: 12)),
               ],
             ),
             onPressed: () => Navigator.pop(context, 'Derin Odaklanma'),
@@ -101,16 +103,23 @@ class _HomePageState extends State<HomePage> {
 
   void _startTimer() {
     setState(() {
-      _remainingSeconds = _selectedMinutes * 60;
+      _remainingSeconds = _timerType == 'Zamanlayıcı' ? _selectedMinutes * 60 : 0;
       _isRunning = true;
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingSeconds > 0) {
-        setState(() => _remainingSeconds--);
+      if (_timerType == 'Zamanlayıcı') {
+        if (_remainingSeconds > 0) {
+          setState(() => _remainingSeconds--);
+        } else {
+          _stopTimer();
+          _giveReward();
+        }
       } else {
-        _stopTimer();
-        _giveReward();
+        setState(() => _remainingSeconds++);
+        if (_remainingSeconds % (15 * 60) == 0) {
+          _giveReward();
+        }
       }
     });
   }
@@ -122,13 +131,21 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _giveReward() async {
     double reward = 1;
-    if (_selectedMinutes > 30) {
-      reward = 3;
-    } else if (_selectedMinutes > 15) {
-      reward = 2;
+    if (_selectedMinutes > 30) reward = 3;
+    else if (_selectedMinutes > 15) reward = 2;
+
+    if (_focusType == 'Derin Odaklanma') {
+      reward *= 1.5;
     }
 
     final earned = await GoldService().earnGold(reward);
+
+    await FirebaseFirestore.instance.collection('focusLogs').add({
+      'userId': FirebaseAuth.instance.currentUser?.uid ?? 'guest',
+      'minutes': _selectedMinutes,
+      'deepFocus': _focusType == 'Derin Odaklanma',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -159,11 +176,16 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.only(right: 12.0),
             child: Row(
               children: [
-                const Icon(Icons.monetization_on, color: Colors.amber, size: 28),
+                const Icon(Icons.monetization_on,
+                    color: Colors.amber, size: 28),
                 const SizedBox(width: 4),
                 Text(
-                  GoldService().totalGold.toStringAsFixed(1),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+                  "${GoldService().totalGold.toStringAsFixed(1)} Coins",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 IconButton(

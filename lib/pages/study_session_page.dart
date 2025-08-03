@@ -19,7 +19,9 @@ class _StudySessionPageState extends State<StudySessionPage> {
     60: 0.5,
     120: 1.0,
   };
-  
+
+  Timer? _timer;
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -35,15 +37,17 @@ class _StudySessionPageState extends State<StudySessionPage> {
     _timer = _tick();
   }
 
-  void _endSession({bool completed = false}) {
+  Future<void> _endSession({bool completed = false}) async {
     _timer?.cancel();
     setState(() {
       _isRunning = false;
       _remainingSeconds = 0;
     });
+
     if (completed) {
       final reward = _goldRewards[_selectedMinutes] ?? 0.0;
-      final earned = GoldService().earnGold(reward);
+      final earned = await GoldService().earnGold(reward);
+
       String msg;
       if (earned == 0.0) {
         msg = 'Günlük altın limitine ulaştın! Bugün daha fazla altın kazanamazsın.';
@@ -52,17 +56,21 @@ class _StudySessionPageState extends State<StudySessionPage> {
       } else {
         msg = 'Ders süresini tamamladın. +$earned altın kazandın!';
       }
+
       TaskService.markStudyToday();
-      // Streak bonusu
+
+      // Streak bonusu (async olarak)
       double bonus = 0.0;
-      if (TaskService.streak == 3) bonus = GoldService().earnGold(1.0); // 3 gün üst üste
-      if (TaskService.streak == 5) bonus = GoldService().earnGold(1.0); // 5 gün üst üste
-      if (TaskService.streak == 10) bonus = GoldService().earnGold(2.0); // 10 gün üst üste
+      if (TaskService.streak == 3) bonus = await GoldService().earnGold(1.0); // 3 gün üst üste
+      if (TaskService.streak == 5) bonus = await GoldService().earnGold(1.0); // 5 gün üst üste
+      if (TaskService.streak == 10) bonus = await GoldService().earnGold(2.0); // 10 gün üst üste
+
       if (bonus > 0) {
         msg += '\nStreak bonusu: +$bonus altın! (Seri: ${TaskService.streak} gün)';
       } else if (TaskService.streak > 1) {
         msg += '\nSerin: ${TaskService.streak} gün!';
       }
+
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -83,7 +91,6 @@ class _StudySessionPageState extends State<StudySessionPage> {
     }
   }
 
-  Timer? _timer;
   Timer _tick() {
     return Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingSeconds <= 1) {
@@ -151,4 +158,4 @@ class _StudySessionPageState extends State<StudySessionPage> {
       ),
     );
   }
-} 
+}

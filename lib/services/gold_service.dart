@@ -33,6 +33,7 @@ class GoldService extends ChangeNotifier {
     return (_todayGold + amount) <= dailyLimit;
   }
 
+  /// ✅ Kullanılacak fonksiyon
   double earnGold(double amount) {
     _checkDate();
     if (!canEarn(amount)) {
@@ -56,4 +57,4 @@ class GoldService extends ChangeNotifier {
     _todayGold = 0.0;
     notifyListeners();
   }
-} 
+}

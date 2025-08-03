@@ -1,3 +1,4 @@
+// lib/pages/planner_page.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -5,6 +6,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../services/task_service.dart';
+import 'widgets/task_timer.dart';
 
 class Task {
   String title;
@@ -68,6 +70,25 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
               Navigator.pop(context);
             },
             child: const Text('Ekle'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showTaskTimer(Task task) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('${task.title} için Sayaç'),
+        content: TaskTimer(
+          durationInMinutes: 25, // Varsayılan süre
+          taskId: task.title,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Kapat'),
           ),
         ],
       ),
@@ -168,7 +189,6 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
-  // ✅ DAILY VIEW
   Widget buildDailyView() {
     final key = DateFormat('yyyy-MM-dd').format(selectedDate);
     final tasks = TaskService.dailyTasks[key] ?? [];
@@ -197,30 +217,19 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
             ],
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text('Yapılacaklar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          ),
-        ),
         Expanded(
           child: ListView(
             children: [
               ...todo.map((task) => ListTile(
                     leading: const Icon(Icons.radio_button_unchecked),
                     title: Text(task.title),
+                    trailing: ElevatedButton(
+                      onPressed: () => _showTaskTimer(task),
+                      child: const Text('Başlat'),
+                    ),
                     onTap: () => setState(() => task.isDone = true),
                   )),
               if (done.isNotEmpty) const Divider(),
-              if (done.isNotEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('Yapıldı', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  ),
-                ),
               ...done.map((task) => ListTile(
                     leading: const Icon(Icons.check_circle, color: Colors.green),
                     title: Text(task.title, style: const TextStyle(decoration: TextDecoration.lineThrough)),
@@ -246,7 +255,6 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
-  // ✅ WEEKLY VIEW
   Widget buildWeeklyView() {
     final firstDay = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
     final weekDays = List.generate(7, (i) => firstDay.add(Duration(days: i)));
@@ -305,7 +313,6 @@ class _PlannerPageState extends State<PlannerPage> with SingleTickerProviderStat
     );
   }
 
-  // ✅ MONTHLY VIEW
   Widget buildMonthlyView() {
     return Column(
       children: [

@@ -13,22 +13,22 @@ import 'pages/coach_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ .env dosyasını yükle
+
   try {
     await dotenv.load(fileName: ".env");
-    print('✅ .env loaded successfully');
+    print(' .env loaded successfully');
   } catch (e) {
-    print('❌ Failed to load .env: $e');
+    print(' Failed to load .env: $e');
   }
 
-  // ✅ Firebase'i başlat
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('✅ Firebase initialized successfully');
+    print(' Firebase initialized successfully');
   } catch (e) {
-    print('❌ Firebase initialization failed: $e');
+    print(' Firebase initialization failed: $e');
   }
 
   // ✅ Türkçe tarih formatlarını yükle

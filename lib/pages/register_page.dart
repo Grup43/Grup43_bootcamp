@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,10 +18,20 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _register() async {
     setState(() => _loading = true);
     try {
-      await _auth.createUserWithEmailAndPassword(
+      final userCredential = await _auth.createUserWithEmailAndPassword(
         email: _emailCtrl.text.trim(),
         password: _passCtrl.text.trim(),
       );
+
+      final user = userCredential.user;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('userStats').doc(user.uid).set({
+          'coins': 0,
+          'totalMinutes': 0,
+          'tasksCompleted': 0,
+          'streakDays': 0,
+        });
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Kayıt başarılı! Giriş yapabilirsiniz.')),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,10 +18,26 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     setState(() => _loading = true);
     try {
-      await _auth.signInWithEmailAndPassword(
+      final userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailCtrl.text.trim(),
         password: _passCtrl.text.trim(),
       );
+
+      final user = userCredential.user;
+      if (user != null) {
+        final docRef = FirebaseFirestore.instance.collection('userStats').doc(user.uid);
+        final snapshot = await docRef.get();
+
+        if (!snapshot.exists) {
+          await docRef.set({
+            'coins': 0,
+            'totalMinutes': 0,
+            'tasksCompleted': 0,
+            'streakDays': 0,
+          });
+        }
+      }
+
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       String msg = '';
